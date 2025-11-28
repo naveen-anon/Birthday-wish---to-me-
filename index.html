@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday Naveen Sir!</title>
+  <style>
+    :root{
+      --pink1:#ff69b4;
+      --pink2:#ff1493;
+      --bg1:#fff0f6;
+      --bg2:#f0f8ff;
+      --card-bg: rgba(255,255,255,0.85);
+      --muted:#444;
+      --glass: rgba(255,255,255,0.6);
+    }
+
+    /* Basic page layout */
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: 'Comic Sans MS', 'Trebuchet MS', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(180deg, var(--bg1), var(--bg2));
+      color:var(--muted);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .wrap{
+      max-width:900px;
+      margin: 36px auto;
+      padding: 28px;
+      text-align:center;
+      position:relative;
+    }
+
+    header{
+      background: linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.1));
+      border-radius:18px;
+      padding:22px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      position:relative;
+      overflow: visible;
+    }
+
+    h1{
+      margin:0 0 6px 0;
+      font-size:clamp(1.8rem, 3.5vw, 3.2rem);
+      color:var(--pink2);
+      letter-spacing:0.6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:.5rem;
+      animation:bounce 2s infinite;
+    }
+
+    .subtitle{
+      margin:6px 0 16px 0;
+      font-size:clamp(1rem, 2vw, 1.25rem);
+      color:#333;
+      animation:fadeIn 2s ease-in;
+    }
+
+    @keyframes bounce{
+      0%,20%,50%,80%,100%{ transform:translateY(0) }
+      40%{ transform:translateY(-22px) }
+      60%{ transform:translateY(-10px) }
+    }
+    @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+
+    /* Cake */
+    .cake-wrap{ margin:18px 0; display:flex; justify-content:center; align-items:center; gap:14px; flex-wrap:wrap; }
+    .cake{
+      width:180px;
+      height:140px;
+      background:linear-gradient(#fffefe,#ffe7f0);
+      border-radius:16px 16px 8px 8px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+      position:relative;
+      transform-origin:center;
+    }
+    .cake::before{
+      content:'';
+      position:absolute;
+      left:12px; right:12px; top:52px; height:48px;
+      background:linear-gradient(#ffd6e8,#ffb6d9);
+      border-radius:8px;
+    }
+    .candles{ position:absolute; top:-22px; left:50%; transform:translateX(-50%); display:flex; gap:8px; }
+    .candle{ width:10px; height:26px; background:#fff6c6; border-radius:3px; position:relative; box-shadow:inset 0 -3px 3px rgba(0,0,0,0.08); }
+    .flame{ position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:12px; height:18px; border-radius:50% 50% 40% 40% / 60% 60% 40% 40%; background: radial-gradient(ellipse at 50% 30%, #fff6c6 0 10%, #ffec8a 12% 26%, #ff9a00 60%); filter:drop-shadow(0 2px 3px rgba(255,150,0,0.2)); animation:flicker 0.25s infinite; }
+    @keyframes flicker{ 0%{transform:translateX(-50%) scale(1)} 50%{transform:translateX(-50%) scale(0.92)} 100%{transform:translateX(-50%) scale(1)} }
+
+    /* controls */
+    .controls{ display:flex; gap:12px; justify-content:center; margin:14px 0 0 0; flex-wrap:wrap; }
+    button, .btn {
+      background: var(--pink1);
+      color:white;
+      border:none;
+      padding:10px 16px;
+      border-radius:10px;
+      font-size:1rem;
+      cursor:pointer;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+      transition: transform .12s ease, box-shadow .12s ease, background-color .12s;
+    }
+    button:hover, .btn:hover{ transform:translateY(-3px); box-shadow:0 12px 22px rgba(0,0,0,0.12) }
+    button.secondary{ background:transparent; border: 2px solid var(--pink1); color:var(--pink2); font-weight:600; }
+
+    /* wishes area card */
+    .card{
+      margin-top:18px;
+      background: var(--card-bg);
+      border-radius:12px;
+      padding:16px;
+      text-align:left;
+    }
+    label{ display:block; font-weight:600; margin-bottom:8px; }
+    textarea{ width:100%; min-height:90px; resize:vertical; padding:10px; font-size:1rem; border-radius:8px; border:1px solid rgba(0,0,0,0.08); }
+    .wish-row{ display:flex; gap:8px; margin-top:10px; align-items:flex-start; }
+    .wish-list{ margin-top:12px; display:grid; gap:8px; }
+    .wish-item{
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      padding:10px 12px;
+      border-radius:10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      display:flex; justify-content:space-between; gap:8px; align-items:center;
+      word-break:break-word;
+    }
+    .wish-meta{ font-size:.85rem; color:#666; margin-left:6px; }
+
+    /* confetti canvas */
+    #confetti-canvas{
+      position:fixed;
+      left:0; top:0; pointer-events:none; z-index:20;
+    }
+
+    /* small utilities */
+    .emojis{ font-size:1.8rem; display:inline-block; animation:rotate 6s linear infinite; }
+    @keyframes rotate{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
+    .meta{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:center;
+      margin-top:8px;
+      flex-wrap:wrap;
+      color:#444;
+      font-weight:600;
+    }
+
+    footer{ margin-top:20px; font-size:.85rem; color:#444; opacity:.9; }
+
+    /* responsive */
+    @media (max-width:520px){
+      .cake{ width:140px; height:110px; }
+      .candles{ gap:6px }
+      .wrap{ padding:18px }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="wrap" role="main" aria-labelledby="page-title">
+    <header>
+      <h1 id="page-title">🎉 Happy Birthday, Dear Naveen Sir! 🥳🎁</h1>
+      <div class="subtitle">God bless you — Keep smiling, keep growing 💗</div>
+
+      <div class="cake-wrap" aria-hidden="true">
+        <div class="cake" title="Birthday cake">
+          <div class="candles" aria-hidden="true">
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+          </div>
+        </div>
+        <div style="text-align:left;">
+          <div style="font-size:1.1rem; font-weight:700; color:var(--pink2)">Celebrate!</div>
+          <div class="meta"><span class="emojis">🎂✨🎈🎊</span> <span id="wishCount">0 wishes</span></div>
+        </div>
+      </div>
+
+      <div class="controls" aria-hidden="false">
+        <button id="playBtn" aria-pressed="false" aria-label="Play birthday music">Play Birthday Song 🎵</button>
+        <button id="stopBtn" class="secondary" aria-label="Stop birthday music">Stop</button>
+        <button id="confettiBtn" aria-pressed="false">Toggle Confetti 🎉</button>
+        <button id="clearBtn" class="secondary" aria-label="Clear all wishes">Clear Wishes</button>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="wishes-title">
+      <h2 id="wishes-title" style="margin-top:0">Add Your Wishes Here:</h2>
+      <label for="wishInput">Write a birthday message (max 300 chars):</label>
+      <textarea id="wishInput" maxlength="300" placeholder="Write a kind birthday message for Naveen Sir..."></textarea>
+
+      <div class="wish-row">
+        <button id="submitWish" class="btn" aria-label="Submit wish">Submit Wish</button>
+        <button id="copyPageLink" class="secondary" aria-label="Copy page link to clipboard">Copy Page Link</button>
+      </div>
+
+      <div class="wish-list" id="wishList" aria-live="polite" style="margin-top:10px"></div>
+    </section>
+
+    <footer>
+      Tip: your wishes are stored locally in your browser. You can copy the page link to share it with others.
+    </footer>
+  </div>
+
+  <!-- Hidden audio element: replace the src with a direct MP3 of a birthday song if desired -->
+  <audio id="birthdaySong" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" preload="auto"></audio>
+
+  <script>
+    /* ---------------------------
+       Confetti (canvas) - lightweight particle system
+       ---------------------------*/
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    let confettiEnabled = true;
+    const confettiPieces = [];
+    const confettiColors = ['#ff4da6','#ffb3d9','#ffd6e8','#ffd1e6','#ff7ab6','#ffd480','#fff2a6','#c7f9f0'];
+
+    function random(min,max){ return Math.random()*(max-min)+min; }
+
+    function resetCanvas(){
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resetCanvas);
+
+    function makePiece(){
+      return {
+        x: Math.random()*width,
+        y: -10,
+        w: random(6,14),
+        h: random(6,14),
+        angle: random(0,Math.PI*2),
+        angleSpeed: random(-0.1,0.1),
+        vx: random(-0.7, 0.7),
+        vy: random(1.5,4),
+        color: confettiColors[(Math.random()*confettiColors.length)|0],
+        tilt: random(-0.5,0.5),
+        lifespan: 0,
+        spin: random(-0.12,0.12)
+      };
+    }
+
+    function spawnConfetti(amount=80){
+      for(let i=0;i<amount;i++){
+        confettiPieces.push(makePiece());
+      }
+      // cap
+      if(confettiPieces.length>500) confettiPieces.splice(0, confettiPieces.length-500);
+    }
+
+    function updateConfetti(){
+      ctx.clearRect(0,0,width,height);
+      for(let i=confettiPieces.length-1;i>=0;i--){
+        const p = confettiPieces[i];
+        p.x += p.vx + Math.sin(p.angle)*0.6;
+        p.y += p.vy;
+        p.angle += p.angleSpeed;
+        p.tilt += p.spin;
+        p.lifespan += 1;
+        // draw rectangle with rotation
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2 + Math.sin(p.tilt)*4, -p.h/2, p.w, p.h);
+        ctx.restore();
+        // remove when off-screen
+        if(p.y > height + 50 || p.lifespan > 600) confettiPieces.splice(i,1);
+      }
+      if(confettiEnabled) requestAnimationFrame(updateConfetti);
+      else ctx.clearRect(0,0,width,height);
+    }
+
+    // start confetti loop
+    spawnConfetti(120);
+    updateConfetti();
+
+    /* ---------------------------
+       Wishes list (localStorage)
+       ---------------------------*/
+    const wishInput = document.getElementById('wishInput');
+    const submitWish = document.getElementById('submitWish');
+    const wishListEl = document.getElementById('wishList');
+    const wishCount = document.getElementById('wishCount');
+    const LOCAL_KEY = 'naveen_wishes_v1';
+
+    function loadWishes(){
+      try{
+        const raw = localStorage.getItem(LOCAL_KEY);
+        return raw ? JSON.parse(raw) : [];
+      }catch(e){ return []; }
+    }
+    function saveWishes(arr){
+      try{ localStorage.setItem(LOCAL_KEY, JSON.stringify(arr)); }catch(e){}
+    }
+
+    function renderWishes(){
+      const wishes = loadWishes();
+      wishListEl.innerHTML = '';
+      wishes.slice().reverse().forEach((w, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'wish-item';
+        const left = document.createElement('div');
+        left.innerHTML = `<div style="font-weight:700">${escapeHtml(w.text)}</div><div class="wish-meta">${new Date(w.ts).toLocaleString()}</div>`;
+        const right = document.createElement('div');
+        right.style.display = 'flex';
+        right.style.gap = '8px';
+        const del = document.createElement('button');
+        del.className = 'secondary';
+        del.textContent = 'Delete';
+        del.title = 'Delete wish';
+        del.onclick = () => {
+          const all = loadWishes();
+          all.splice(all.length - 1 - (wishes.length - 1 - idx), 1); // calculate index for original order
+          saveWishes(all);
+          renderWishes();
+        };
+        right.appendChild(del);
+        wrapper.appendChild(left);
+        wrapper.appendChild(right);
+        wishListEl.appendChild(wrapper);
+      });
+      wishCount.textContent = `${wishes.length} ${wishes.length === 1 ? 'wish' : 'wishes'}`;
+    }
+
+    function addWish(text){
+      if(!text || !text.trim()) return;
+      const arr = loadWishes();
+      arr.push({ text: text.trim(), ts: Date.now() });
+      // limit stored wishes to 300 (avoid runaway storage)
+      if(arr.length > 300) arr.shift();
+      saveWishes(arr);
+      renderWishes();
+    }
+
+    // small helper
+    function escapeHtml(s){ return s.replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+
+    submitWish.addEventListener('click', () => {
+      addWish(wishInput.value);
+      wishInput.value = '';
+      wishInput.focus();
+      // small burst
+      spawnConfetti(24);
+    });
+
+    // enter key handling
+    wishInput.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)){
+        e.preventDefault();
+        submitWish.click();
+      }
+    });
+
+    // clear wishes
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if(confirm('Clear all saved wishes from your browser? This cannot be undone.')) {
+        localStorage.removeItem(LOCAL_KEY);
+        renderWishes();
+      }
+    });
+
+    // copy page link
+    document.getElementById('copyPageLink').addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText(location.href);
+        alert('Page link copied to clipboard — share it with others!');
+      }catch(e){ alert('Unable to copy automatically. Please copy the URL from your address bar.'); }
+    });
+
+    renderWishes();
+
+    /* ---------------------------
+       Audio: play/stop + fallback WebAudio melody
+       ---------------------------*/
+    const audioEl = document.getElementById('birthdaySong');
+    const playBtn = document.getElementById('playBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    let audioContext = null;
+    let oscillatorNodes = [];
+
+    async function playAudioWithFallback(){
+      // try HTML audio element first
+      try{
+        await audioEl.play();
+        playBtn.setAttribute('aria-pressed','true');
+        return;
+      }catch(e){
+        // fallback to WebAudio simple melody
+        if(!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const notes = [523.25, 523.25, 659.25, 523.25, 783.99]; // small tune
+        let t = audioContext.currentTime;
+        oscillatorNodes = [];
+        notes.forEach((f,i) => {
+          const o = audioContext.createOscillator();
+          const g = audioContext.createGain();
+          o.type = 'sine';
+          o.frequency.value = f;
+          g.gain.value = 0.0001;
+          o.connect(g);
+          g.connect(audioContext.destination);
+          o.start(t + i*0.3);
+          g.gain.linearRampToValueAtTime(0.12, t + i*0.3 + 0.02);
+          g.gain.linearRampToValueAtTime(0.0001, t + i*0.3 + 0.28);
+          o.stop(t + i*0.3 + 0.3);
+          oscillatorNodes.push(o);
+        });
+        playBtn.setAttribute('aria-pressed','true');
+      }
+    }
+
+    function stopAudio(){
+      // stop HTML audio
+      try{ audioEl.pause(); audioEl.currentTime = 0; }catch(e){}
+      // stop oscillator nodes if any
+      try{
+        oscillatorNodes.forEach(o => {
+          try{ o.disconnect(); }catch(e){}
+        });
+        oscillatorNodes = [];
+      }catch(e){}
+      playBtn.setAttribute('aria-pressed','false');
+    }
+
+    playBtn.addEventListener('click', async () => {
+      // resume audio context if needed (user gesture required)
+      if(audioContext && audioContext.state === 'suspended') await audioContext.resume();
+      await playAudioWithFallback();
+    });
+    stopBtn.addEventListener('click', stopAudio);
+
+    // stop when audio naturally ends
+    audioEl.addEventListener('ended', () => {
+      playBtn.setAttribute('aria-pressed','false');
+    });
+
+    /* ---------------------------
+       Confetti toggle + burst
+       ---------------------------*/
+    const confettiBtn = document.getElementById('confettiBtn');
+    confettiBtn.addEventListener('click', () => {
+      confettiEnabled = !confettiEnabled;
+      confettiBtn.setAttribute('aria-pressed', String(confettiEnabled));
+      if(confettiEnabled){
+        spawnConfetti(160);
+        updateConfetti();
+      } else {
+        // clear pieces
+        confettiPieces.length = 0;
+        ctx.clearRect(0,0,width,height);
+      }
+    });
+
+    // small automatic confetti burst on load
+    setTimeout(() => { spawnConfetti(120); }, 500);
+
+    /* ---------------------------
+       Lightweight accessibility and page-ready helpers
+       ---------------------------*/
+    // allow keyboard focus styles for buttons
+    document.addEventListener('keyup', (e) => {
+      if(e.key === 'F2'){ // debug: F2 adds a small wish
+        addWish('Wishing you a wonderful year ahead! 🎉');
+      }
+    });
+
+    // ensure visible canvas size on load
+    resetCanvas();
+
+    // small NUDGE: click anywhere on header to make confetti burst
+    document.querySelector('header').addEventListener('click', () => {
+      spawnConfetti(40);
+    });
+
+    // make sure to render wishes if storage changes in another tab
+    window.addEventListener('storage', (e) => {
+      if(e.key === LOCAL_KEY) renderWishes();
+    });
+
+    // graceful degradation: if canvas unsupported, hide
+    if(!canvas || !canvas.getContext) {
+      console.warn('Confetti not supported in this browser.');
+      document.getElementById('confettiBtn').style.display = 'none';
+    }
+  </script>
+</body>
+  </html>
